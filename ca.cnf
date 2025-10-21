@@ -1,7 +1,7 @@
 [ ca ]
-default_ca = Fishdrowned_ROOT_CA
+default_ca = Mostlink_ROOT_CA
 
-[ Fishdrowned_ROOT_CA ]
+[ Mostlink_ROOT_CA ]
 new_certs_dir   = ./out/newcerts
 certificate     = ./out/root.crt
 database        = ./out/index.txt
@@ -56,9 +56,9 @@ emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
 countryName_default             = CN
-stateOrProvinceName_default     = Guangdong
-localityName_default            = Guangzhou
-0.organizationName_default      = Fishdrowned
+stateOrProvinceName_default     = Shanghai
+localityName_default            = Shanghai
+0.organizationName_default      = Mostlink
 organizationalUnitName_default  =
 emailAddress_default            =
 
