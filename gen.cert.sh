@@ -6,18 +6,27 @@ then
     echo 'Issue a SSL certificate with Mostlink ROOT CA'
     echo
     echo 'Usage: ./gen.cert.sh <domain> [<domain2>] [<domain3>] [<domain4>] ...'
-    echo '    <domain>          The domain name of your site, like "example.dev",'
-    echo '                      you will get a certificate for *.example.dev'
-    echo '                      Multiple domains are acceptable'
+    echo '    <domain>          The domain name of your site, like "*.example.dev",'
+    echo '                      Multiple domains and IPs are acceptable'
     exit;
 fi
 
 SAN=""
 for var in "$@"
 do
-    SAN+="DNS:*.${var},DNS:${var},"
+    if [[ "$var" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        # IPv4 地址
+        SAN+="IP:${var},"
+    elif [[ "$var" =~ ^([0-9a-fA-F:]+)$ ]]; then
+        # IPv6 地址
+        SAN+="IP:${var},"
+    else
+        # 域名
+        SAN+="DNS:${var},"
+    fi
 done
 SAN=${SAN:0:${#SAN}-1}
+
 
 # Move to root directory
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -39,7 +48,7 @@ openssl req -new -out "${DIR}/$1.csr.pem" \
     -reqexts SAN \
     -config <(cat ca.cnf \
         <(printf "[SAN]\nsubjectAltName=${SAN}")) \
-    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Mostlink/OU=$1/CN=*.$1"
+    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Mostlink/OU=$1/CN=$1"
 
 # Issue certificate
 # openssl ca -batch -config ./ca.cnf -notext -in "${DIR}/$1.csr.pem" -out "${DIR}/$1.cert.pem"
