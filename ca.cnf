@@ -1,14 +1,14 @@
 [ ca ]
-default_ca = Mostlink_ROOT_CA
+default_ca = Helptimely_ROOT_CA
 
-[ Mostlink_ROOT_CA ]
+[ Helptimely_ROOT_CA ]
 new_certs_dir   = ./out/newcerts
 certificate     = ./out/root.crt
 database        = ./out/index.txt
 private_key     = ./out/root.key.pem
 serial          = ./out/serial
 unique_subject  = no
-default_days    = 730
+default_days    = 7300
 default_md      = sha256
 policy          = policy_loose
 x509_extensions = ca_extensions
@@ -58,7 +58,7 @@ emailAddress                    = Email Address
 countryName_default             = CN
 stateOrProvinceName_default     = Shanghai
 localityName_default            = Shanghai
-0.organizationName_default      = Mostlink
+0.organizationName_default      = Helptimely
 organizationalUnitName_default  =
 emailAddress_default            =
 

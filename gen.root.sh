@@ -14,7 +14,7 @@ fi
 openssl req -config ca.cnf \
     -newkey rsa:2048 -nodes -keyout out/root.key.pem \
     -new -x509 -days 7300 -out out/root.crt \
-    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Mostlink/CN=Mostlink ROOT CA"
+    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Helptimely/CN=Helptimely ROOT CA"
 
 # Generate cert key
 openssl genrsa -out "out/cert.key.pem" 2048
