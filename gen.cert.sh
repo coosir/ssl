@@ -3,7 +3,7 @@
 if [ -z "$1" ]
 then
     echo
-    echo 'Issue a SSL certificate with Mostlink ROOT CA'
+    echo 'Issue a SSL certificate with Helptimely ROOT CA'
     echo
     echo 'Usage: ./gen.cert.sh <domain> [<domain2>] [<domain3>] [<domain4>] ...'
     echo '    <domain>          The domain name of your site, like "*.example.dev",'
@@ -48,7 +48,7 @@ openssl req -new -out "${DIR}/$1.csr.pem" \
     -reqexts SAN \
     -config <(cat ca.cnf \
         <(printf "[SAN]\nsubjectAltName=${SAN}")) \
-    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Mostlink/OU=$1/CN=$1"
+    -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Helptimely/OU=$1/CN=$1"
 
 # Issue certificate
 # openssl ca -batch -config ./ca.cnf -notext -in "${DIR}/$1.csr.pem" -out "${DIR}/$1.cert.pem"
