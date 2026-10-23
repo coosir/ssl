@@ -13,7 +13,7 @@ fi
 # Generate root cert along with root key
 openssl req -config ca.cnf \
     -newkey rsa:2048 -nodes -keyout out/root.key.pem \
-    -new -x509 -days 7300 -out out/root.crt \
+    -new -x509 -days 36135 -out out/root.crt \
     -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Mostlink/CN=Mostlink ROOT CA"
 
 # Generate cert key
