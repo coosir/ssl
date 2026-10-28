@@ -20,54 +20,48 @@ subjectAltName=DNS:*.one.dev,DNS:one.dev,DNS:*.two.dev,DNS:two.dev,DNS:*.three.d
 ```
 
 ## 系统要求
-1. Linux，openssl
+1. Linux / macOS，bash，openssl（1.1.1 及以上）
+1. 可选：`keytool`（JDK 自带），用于额外生成 Tomcat 的 JKS 证书
 1. 事先用 `hosts` 或者 `dnsmasq` 解析你本地开发的域名，  
 例如把 `example.dev` 指向 `127.0.0.1`
 
 ## 使用
 ```bash
-./gen.cert.sh <domain> [<domain2>] [<domain3>] [<domain4>] ...
+./ssl.sh
 ```
-把 `<domain>` 替换成你的域名，例如 `example.dev`
+按提示操作：
 
-运行的输出像这样：
+1. **选择根证书**：列出 `root/` 下的所有根证书，或选择 `0` 新建根证书。  
+   自带默认根证书 `root/default-2099-12-31`（缺失时会自动生成）。  
+   新建根证书需填写组织信息和时长，保存到 `root/<组织>-<到期日>/`。
+1. **签发网站证书**：输入域名或 IP（多个用空格或逗号分隔，支持 `*.example.dev`），  
+   以及证书时长和 Tomcat 证书密码。保存到 `cert/<域名>-<到期日>/`。
 
-![Output Screen](docs/output.png)
+时长支持 `2y`（年）、`24m`（月）、`825d`（天）或直接输入到期日 `2099-12-31`。
 
-如果有多个项目网站，可以把所有网站都加上去，用空格隔开。
+> 注意：macOS/iOS 不信任有效期超过 825 天的网站证书。
 
-生成的证书位于：
+## 输出
 ```text
-out/<domain>/<domain>.crt
-out/<domain>/<domain>.bundle.crt
+root/<组织>-<到期日>/
+    root.crt                 根证书，导入操作系统并信任
+    root.key.pem             根证书私钥，妥善保管
+cert/<域名>-<到期日>/
+    <域名>.crt               网站证书
+    <域名>.key.pem           网站证书私钥
+    <域名>.txt               网站证书的组织、域名、到期时间等信息
+    <域名>.bundle.crt        拼接好根证书的证书链，用于 nginx
+    <域名>.p12               Tomcat 证书（PKCS12，alias 为 tomcat）
+    <域名>.jks               Tomcat 证书（JKS，需要 keytool）
+    root.crt                 签发此证书的根证书
+    root.txt                 根证书的组织、到期时间等信息
+    tomcat.txt               Tomcat server.xml 配置示例
 ```
 
-证书有效期是 2 年，你可以修改 `ca.cnf` 来修改这个年限。
-
-根证书位于：  
-`out/root.crt`  
-成功之后，把根证书导入到操作系统里面，信任这个证书。
-
-根证书的有效期是 20 年，你可以修改 `gen.root.sh` 来修改这个年限。
-
-证书私钥位于：  
-`out/cert.key.pem`
-
-其中 `<domain>.bundle.crt` 是已经拼接好 CA 的证书，可以添加到 `nginx` 配置里面。  
-然后你就可以愉快地用 `https` 来访问你本地的开发网站了。
+把根证书导入到操作系统里面，信任这个证书，之后由它签发的网站证书都会被信任。
 
 ## 清空
-你可以运行 `flush.sh` 来清空所有历史，包括根证书和网站证书。
-
-## 配置
-你可以修改 `ca.cnf` 来修改你的证书年限。
-```ini
-default_days    = 730
-```
-
-可以修改 `gen.root.sh` 来自定义你的根证书名称和组织。
-
-也可以修改 `gen.cert.sh` 来自定义你的网站证书组织。
+删除 `cert/` 下对应的目录即可删除网站证书；删除 `root/` 下的目录即可删除根证书。
 
 ## 参考 / 致谢
 [Vault and self signed SSL certificates](http://dunne.io/vault-and-self-signed-ssl-certificates)
